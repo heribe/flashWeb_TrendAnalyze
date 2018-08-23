@@ -2,6 +2,10 @@
 # -*- coding: utf8 -*-
 from flask import Flask, request
 from flask import Response
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 
 app = Flask(__name__)
@@ -15,8 +19,7 @@ def hello_world():
 def xmlin():
     print ("************SERVER CALLED ***********")
     print request.data
-    xml = """<?xml version='1.0' encoding='utf-8'?>
-<a>7</a>"""
+    xml = request.data
     return Response(xml, mimetype='application/xml')
 
 

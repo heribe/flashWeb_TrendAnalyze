@@ -8,6 +8,10 @@ import logging
 # import mysql.connector
 from openpyxl import load_workbook
 import time
+try:
+    import xml.etree.cElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET
 
 ## debug，info，warning，error
 logging.basicConfig(level=logging.ERROR)
@@ -92,28 +96,25 @@ def theEnd(data, s):
     else:
         print "总体呈下降趋势"
     excetPoint = findException(data, w)
-    if len(excetPoint) > 0:
+    print excetPoint
+    if len(excetPoint)>0:
         for i in range(len(excetPoint)):
             point = excetPoint[i]
-            data_ = np.append(data[:point - 1, :], data[point:, :], axis=0)
-            w_ = caseTrend(data_, s + "_")
-            # plt.plot([1, len(data)], [w_[0] + w_[1], w_[0] + w_[1] * len(data)], label=("trend_" + str(i)))
-            # if w[1] > 0:
-            if w_[1] > 0:
-                if w[1] > w_[1]:
-                    print "主要是%d月的影响使案件数量上升更明显" % point
+            data_ = np.append(data[:point-1,:],data[point:,:],axis = 0)
+            w_ = caseTrend(data_,s+"_")
+            # plt.plot([1,len(data)],[w_[0]+w_[1],w_[0]+w_[1]*len(data)],label=("trend_"+str(i)))
+            if w[1]>0:
+                if w_[1]>0:
+                    if w[1]>w_[1]: print "主要是%d月的影响使案件数量上升更明显"%point
+                    else: print "因%d月的影响使案件数量上升变缓"%point
                 else:
-                    print "因%d月的影响使案件数量上升变缓" % point
+                    print "因%d月的影响使案件数量从下降趋势变为了上升趋势"%point
             else:
-                print "因%d月的影响使案件数量从下降趋势变为了上升趋势" % point
-        else:
-            if w_[1] < 0:
-                if w[1] < w_[1]:
-                    print "主要是%d月的影响使案件数量下降更明显" % point
+                if w_[1]<0:
+                    if w[1]<w_[1]: print "主要是%d月的影响使案件数量下降更明显"%point
+                    else: print "因%d月的影响使案件数量下降变缓"%point
                 else:
-                    print "因%d月的影响使案件数量下降变缓" % point
-            else:
-                     print "因%d月的影响使案件数量从上升趋势变为了下降趋势" % point
+                    print "因%d月的影响使案件数量从上升趋势变为了下降趋势"%point
     # plt.title(s)
     # plt.xlabel("month")
     # plt.ylabel("cases")
@@ -283,11 +284,58 @@ def q2():
     dataSum[:,0] = dataSum[:,0]/(len(data))
     theEnd2(data, description, dataSum)
 
-
+def treadAnalyze(xml):
+    # 取得xml根节点
+    root = ET.fromstring(xml)
+    # 分别取得tag为‘fun','num','items'的节点
+    fun = root.find('fun')  # 需要的函数，1表示单条曲线趋势，2表示多条曲线对总曲线趋势的影响
+    num = root.find('num')  # 数据总量，当fun=2时，第一条数据为总量数据
+    items = root.find('items').findall('item')
+    assert fun != None
+    assert num != None
+    assert items != []
+    fun = int(fun.text)
+    num = int(num.text)
+    assert len(items) == int(num)
+    datas = []
+    if fun == 2: dataSum = []
+    # for循环用于把datas格式转成如下模样:
+    # [array([[  1, 600],[  2, 601],[  3, 400],[  4, 603],[  5, 345],[  6, 605],[  7, 606],[  8, 567],[  9, 608],[ 10, 643],[ 11, 610],[ 12, 611]]),
+    #  array([[  1, 400],[  2, 478],[  3, 893],[  4, 403],[  5, 343],[  6, 405],[  7, 406],[  8, 407],[  9, 408],[ 10,  19],[ 11, 410],[ 12, 411]]),
+    #  array([[  1, 169],[  2, 189],[  3, 202],[  4, 232],[  5, 256],[  6, 205],[  7, 266],[  8, 555],[  9, 208],[ 10,  11],[ 11, 267],[ 12, 211]]),
+    #  array([[  1, 369],[  2, 413],[  3, 466],[  4, 503],[  5, 504],[  6, 533],[  7, 506],[  8, 507],[  9, 508],[ 10, 509],[ 11, 510],[ 12, 511]])]
+    for index, item in enumerate(items):
+        temp = np.array(item.text.split(','))
+        datao = np.zeros((len(temp), 2))
+        datao[:, 0] = range(1, len(temp) + 1)
+        datao[:, 1] = temp
+        datao = datao.astype(int)
+        if fun == 2 and index == 0:
+            dataSum = datao
+        else:
+            datas.append(datao)
+    if fun == 1:
+        for _ in datas:
+            theEnd(_,'data')
+    if fun == 2:
+        description = ('两强一盗', '酒驾', '凶杀', '其他', '案件总数')
+        theEnd2(datas,description,dataSum)
 if __name__ == '__main__':
-    start = time.time()
-    for i in range(500):
-        q1()
-        q2()
-    elapsed = (time.time() - start)
-    print "time:",elapsed
+    # start = time.time()
+    # for i in range(1):
+    #     q1()
+    #     q2()
+    # elapsed = (time.time() - start)
+    # print "time:",elapsed
+    xml="""<data>
+    <fun>2</fun>
+    <num>5</num>
+    <items>
+        <item>1538,1681,1961,1741,1448,1748,1784,2036,1732,1182,1797,1744</item>
+        <item>600,601,400,603,345,605,606,567,608,643,610,611</item>
+        <item>400,478,893,403,343,405,406,407,408,19,410,411</item>
+        <item>169,189,202,232,256,205,266,555,208,11,267,211</item>
+        <item>369,413,466,503,504,533,506,507,508,509,510,511</item>
+    </items>
+</data>"""
+    treadAnalyze(xml)
