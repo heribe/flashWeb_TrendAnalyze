@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 from flask import Flask, request
 from flask import Response
+import trendAnalyze
 try:
     import xml.etree.cElementTree as ET
 except ImportError:
@@ -18,8 +19,8 @@ def hello_world():
 @app.route('/xmlin',methods=['POST'])
 def xmlin():
     print ("************SERVER CALLED ***********")
-    print request.data
-    xml = request.data
+    xml = trendAnalyze.treadAnalyze(request.data)
+    # xml = request.data
     return Response(xml, mimetype='application/xml')
 
 
