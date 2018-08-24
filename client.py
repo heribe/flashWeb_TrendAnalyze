@@ -18,4 +18,4 @@ xml = """<data>
     </items>
 </data>"""
 headers = {'Content-Type':'application/xml'} # set what your server accepts
-print requests.post('http://localhost:5000/xmlin', data=xml, headers=headers).text
+print requests.post('http://54.95.66.128:5000/xmlin', data=xml, headers=headers).text

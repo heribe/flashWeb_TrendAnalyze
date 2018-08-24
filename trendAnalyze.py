@@ -13,7 +13,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-# 计算趋势
+# 计算趋势（线性回归）
 def caseTrend(data, s):
     x = data[:, 0]
     y = data[:, 1]
@@ -119,7 +119,6 @@ def theEnd2(data, dataSum):
     y = dataSum[:, 1]
     # plt.plot(x, y, marker='o', label=s + 'Sum')
     wSum = caseTrend(dataSum, s + 'Sum')
-    print ('wSum = %f' % wSum[1])
 
     ## 分析趋势
     ws = np.array(ws)
