@@ -1,4 +1,10 @@
 # flashWeb_TrendAnalyze
+- flaskWeb.py  
+   主程序文件
+- client.py  
+    客户端模拟
+- test_data.xml  
+    测试数据
 ## ubuntu部署方法
 1. 安装python 2.7
 2. 安装虚拟环境工具->安装虚拟环境->进入虚拟环境  
@@ -85,6 +91,100 @@
     1. sudo service supervisor start
     2. sudo service nginx start
     ```
-> 参考博客[flask项目部署到阿里云服务器](https://blog.csdn.net/qq_16293649/article/details/78601569)
+> 参考博客[“flask项目部署到阿里云服务器”](https://blog.csdn.net/qq_16293649/article/details/78601569)
  ## Windows部署方法
- 
+1. **安装python 2.7**
+2. **安装虚拟环境工具->安装虚拟环境->进入虚拟环境**  
+    ```
+    1. pip install virtualenv  
+      
+    2. virtualenv --no-site-packages py2env  
+      
+    3. py2envScripts\acticate.bat
+    ```
+3. **进入项目目录**
+4. **安装依赖：**
+    ```
+    pip install -r requirements_win.txt
+    ```
+5. **安装Apache**  
+    <font color=red>**!!!注意!!!**  
+    > 如果下面这一点没有做到，整个过程有99%的可能性会失败。  
+    Apache,mod_wsgi和Python都必须用相同版本的C/C++编译器生成，它们要么是32位的，要么是64位的，不能混用，同时编译方式从VC9到VC12都有，也不能混用。  </font>
+
+    从[这里](http://www.apachelounge.com/download/ )下载相应版本Apache（版本说明看[这里](https://github.com/GrahamDumpleton/mod_wsgi/blob/master/win32/README.rst)），<font color=green>或者直接从[这里](https://zh.osdn.net/projects/sfnet_appmm/downloads/httpd-2.4.6-win32-VC9.zip/)下载httpd-win32-VC9(适用于32位python2)</font>，然后选择对应的版本，将Apache24文件夹拷贝到C:\。当然，你可以拷贝到你的系统的任何位置，但Apache的默认配置是C:\Apache24。  
+    
+    如果你本机运行了IIS，将其关掉。因为IIS和Apache都默认用的是80端口。如果你想配置其它端口，我相信那也不难。等把Flask部署成功后再来捣鼓吧。  
+    >打开cmd  
+    ```
+    > cd c:\  
+    > cd Apache24\bin\
+    > httpd
+    ```
+
+    然后打开浏览器，输入 http://localhost  
+    如果网页上显示 It Works! ，那说明apache服务器运行起来了。
+6. **安装mod_wsgi**  
+    从[这里](https://code.google.com/p/modwsgi/downloads/detail?name=mod_wsgi-win32-ap22py27-3.3.so)下载mod_wsgi，<font color=green>或者直接从[这里](https://github.com/GrahamDumpleton/mod_wsgi/releases/tag/4.4.12)下载</font>，然后选择相应版本的.so文件,比如```mod_wsgi-py27-VC9.so```文件，将其拷贝至C:\Apache24\modules\下，并更名为mod_wsgi.so。
+
+    打开 c:\Apache24\conf\httpd.conf 添加如下配置  
+    ```
+    LoadModule wsgi_module modules/mod_wsgi.so
+    ```
+
+    重新启动httpd，如果没有报错，说明mod_wsgi模块在apache里面加载成功了。
+7. **在Apache中配置站点**  
+    将以下配置代码加入到C:\Apache24\conf\httpd.conf文件中
+    ```
+    <VirtualHost *:80 >
+    ServerAdmin example@company.com
+    DocumentRoot "D:\code\flashWeb_TrendAnalyze" 
+    <Directory "D:\code\flashWeb_TrendAnalyze">
+    Order allow,deny
+    Allow from all 
+    Require all granted
+    </Directory>
+    WSGIScriptAlias / D:\code\flashWeb_TrendAnalyze\run.wsgi
+    </VirtualHost>
+    ```
+
+    重启httpd，打开浏览器，输入```http://localhost/hello```，若显示“Hello World！”，则为配置成功。
+8. **安装、启动Apache服务**  
+    可以在Apache安装目录的bin子目录下使用如下命令安装一个Apache服务。如果没有指定服务名称和配置文件，则在安装时使用默认服务名称Apache2.4，默认配置文件conf/httpd.conf。  
+    ```
+    C:\Apache2.4\bin> httpd  -k  install 
+    ```
+    当在同一台机器上装有多个Apache服务时，必须为它们指定不同的名称，这样方便管理。可以使用下面的命令来指定服务的名称，其中“ApacheShop”为指定的服务名称。
+    ```
+    C:\Apache2.4\bin> httpd  -k  install  -n  ApacheShop 
+    ```
+    如果想为不同的服务指定不同的配置文件，可以在安装时使用如下的命令来指定：
+    ```
+    C:\Apache2.4\bin> httpd  -k  install  -n  
+    ApacheShop -f "C:/Apache2.4/conf/my.conf" 
+    ```
+    ```
+    C:\Apache2.4\bin> httpd  -k  uninstall  
+    ```
+    也可以移除指定名称的服务，如下所示：
+    ```
+    C:\Apache2.4\bin> httpd  -k  uninstall  -n  ApacheShop 
+    ```
+    ---  
+    启动Apache服务
+    ```
+    NET START Apache2.4
+    ```
+    关闭Apache服务
+    ```
+    NET STOP Apache2.4
+    ```
+    ---  
+    在启动Apache服务之前，可以使用下面的命令来检查配置文件的正确性。```C:\Apache2.4\bin> httpd  -n  Apache2.4  -t ```  
+    还可以通过命令行控制Apache服务。启动一个已安装的服务：```C:\Apache2.4\bin> httpd  -k  start ```  
+    停止一个已安装的服务：```C:\Apache2.4\bin> httpd  -k  stop```或  ```C:\Apache2.4\bin> httpd  -k  shutdown ```  
+    重新启动一个运行中的服务，可以使用下面的命令强制其重新加载配置文件：```C:\Apache2.4\bin> httpd  -k  restart ```
+    
+
+**启动完Apache服务后即可开始使用服务**  
+>参考博客[Flask + mod_wsgi + Apache on Windows 部署成功(随时接受提问)](https://blog.csdn.net/firefox1/article/details/46438769)和[1.2.2 启动、停止和重新启动Apache服务（1）](http://book.51cto.com/art/201110/298017.htm)
