@@ -186,5 +186,5 @@
     重新启动一个运行中的服务，可以使用下面的命令强制其重新加载配置文件：```C:\Apache2.4\bin> httpd  -k  restart ```
     
 
-**启动完Apache服务后即可开始使用服务**  
+**启动完Apache服务后即可开始使用服务**  
 >参考博客[Flask + mod_wsgi + Apache on Windows 部署成功(随时接受提问)](https://blog.csdn.net/firefox1/article/details/46438769)和[1.2.2 启动、停止和重新启动Apache服务（1）](http://book.51cto.com/art/201110/298017.htm)
