@@ -1,7 +1,7 @@
 # flashWeb_TrendAnalyze
 - flaskWeb.py  
    web文件
-- trendAnalyze.py
+- trendAnalyze.py  
    主程序文件
 - client.py  
     客户端模拟
