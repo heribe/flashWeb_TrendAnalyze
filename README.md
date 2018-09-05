@@ -46,7 +46,7 @@
         > num：条目数  
         > items：条目内容  
         >> item：每条条目内容，从一月到十二月每个月的值，用英文','隔开。
-    - 数据库方式: 查看```trendAnalyze.py```文件注释
+    - 数据库方式: 查看```trendAnalyze.py```文件注释
 - 输出：  
     功能一的输出实例
     ```xml
@@ -125,7 +125,7 @@
     </out>
     ```
     > w：每条线的斜率值  
-    > w_dataSum：总曲线斜率值  
+    > w_dataSum：总曲线斜率值  
     > descripiton：描述
 ## ubuntu部署方法
 1. 安装python 2.7
