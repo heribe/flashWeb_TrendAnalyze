@@ -22,7 +22,7 @@
     ```
     pip install -r requirements.txt
     ```
-5. 编辑 ```uconfig.ini```文件
+5. 编辑 ```uconfig.ini```文件（在项目目录下创建```uconfig.ini```文件）
     ```
     [uwsgi]
 
