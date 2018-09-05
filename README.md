@@ -100,7 +100,7 @@
       
     2. virtualenv --no-site-packages py2env  
       
-    3. py2envScripts\acticate.bat
+    3. py2env\Scripts\acticate.bat
     ```
 3. **进入项目目录**
 4. **安装依赖：**
@@ -133,7 +133,7 @@
     ```
 
     重新启动httpd，如果没有报错，说明mod_wsgi模块在apache里面加载成功了。
-7. **在Apache中配置站点**  
+7. **在Apache中配置站点**  
     将以下配置代码加入到C:\Apache24\conf\httpd.conf文件中
     ```
     <VirtualHost *:80 >
