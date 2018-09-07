@@ -58,7 +58,7 @@ def findException(data, w):
     Ein = (np.sum(np.abs(Eall)) / len(data))
     out = np.array([])
     for index, e in enumerate(np.abs(Eall)):
-        if e > 2 * Ein:
+        if e > 2 * Ein and e > 10**-8:  # 后面的条件主要是排除总体误差偏小的情况
             out = np.append(out, index + 1)
     # print "方差法异常月份：", out
     return out.astype(np.int32)
@@ -99,7 +99,9 @@ def theEnd(data, s):
                         description = description + "因%d月的影响使案件数量下降变缓\n" % point
                 else:
                     description = description + "因%d月的影响使案件数量从上升趋势变为了下降趋势\n" % point
-    return excetPoints, description
+    else :
+        description = description + "无明显异常点"
+    return w[1], excetPoints, description
 
 
 ## 分析各个分趋势对总趋势的影响(多个曲线）
@@ -177,14 +179,18 @@ def treadAnalyze(xml):
     if fun == 1:
         itemw = []
         itemd = []
+        itemwO = []
         for _ in datas:
-            exceptions, description = theEnd(_, 'data')
+            w, exceptions, description = theEnd(_, 'data')
             itemw.append(exceptions)
             itemd.append(description)
+            itemwO.append(w)
         root = ET.Element('out')
         for index, exceptions in enumerate(itemw):
             item = ET.SubElement(root, 'item')
             item.set('id', str(index + 1))
+            wOrigin = ET.SubElement(item, 'wOrigin')
+            wOrigin.text = str(itemwO[index])
             for point in exceptions:
                 w = ET.SubElement(item, 'w')
                 month = ET.SubElement(w, 'month')

@@ -53,10 +53,12 @@
     <?xml version='1.0' encoding='UTF-8'?>
     <out>
         <item id="1">
+            <wOrigin>-1.356643356643282</wOrigin>
             <w>
                 <month>8</month>
                 <value>-5.300129366106063</value>
             </w>
+            <wOrigin>-166.8461538461536</wOrigin>
             <w>
                 <month>10</month>
                 <value>13.740532959326877</value>
@@ -67,14 +69,17 @@
             </description>
         </item>
         <item id="2">
+            <wOrigin>-1.356643356643282</wOrigin>
             <w>
                 <month>1</month>
                 <value>-322.9818181818177</value>
             </w>
+            <wOrigin>-166.8461538461536</wOrigin>
             <w>
                 <month>4</month>
                 <value>-81.6114819759679</value>
             </w>
+            <wOrigin>-38.98601398601383</wOrigin>
             <w>
                 <month>10</month>
                 <value>-86.06030855539949</value>
@@ -86,14 +91,17 @@
             </description>
         </item>
         <item id="3">
+            <wOrigin>-1.356643356643282</wOrigin>
             <w>
                 <month>10</month>
                 <value>22.822580645161466</value>
             </w>
+            <wOrigin>-166.8461538461536</wOrigin>
             <w>
                 <month>11</month>
                 <value>-76.31654135338353</value>
             </w>
+            <wOrigin>-38.98601398601383</wOrigin>
             <w>
                 <month>12</month>
                 <value>-89.51818181818156</value>
