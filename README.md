@@ -1,4 +1,5 @@
 # flashWeb_TrendAnalyze
+本服务主要是用flash框架实现python的web功能，数据处理程序为trendAnalyze.py
 ## 各文件功能
 - flaskWeb.py  
    web文件
